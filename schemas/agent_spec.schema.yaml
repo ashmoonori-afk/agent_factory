@@ -1,0 +1,92 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Agent Spec"
+description: "Schema for Agent Factory agent specification"
+type: object
+required:
+  - name
+  - description
+  - type
+properties:
+  name:
+    type: string
+    pattern: "^[a-z0-9-]+$"
+    description: "Agent name in kebab-case"
+  description:
+    type: string
+    minLength: 1
+    description: "1-2 sentence agent description"
+  type:
+    type: string
+    enum: ["single", "multi"]
+    description: "Agent type: single or multi-agent"
+  runtime:
+    type: object
+    properties:
+      primary:
+        type: string
+        enum: ["claude-code", "codex", "both"]
+        default: "both"
+    additionalProperties: false
+  policies:
+    type: object
+    properties:
+      deny:
+        type: array
+        items:
+          type: string
+      ask:
+        type: array
+        items:
+          type: string
+      allow:
+        type: array
+        items:
+          type: string
+    additionalProperties: false
+  persona:
+    type: object
+    properties:
+      tone:
+        type: string
+      language:
+        type: string
+      custom_instructions:
+        type: string
+    additionalProperties: false
+  skills:
+    type: array
+    items:
+      type: string
+  context:
+    type: string
+  agents:
+    type: array
+    items:
+      type: object
+      required:
+        - id
+        - role
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+        next:
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+    maxItems: 5
+  topology:
+    type: object
+    properties:
+      entry:
+        type: string
+      max_loops:
+        type: integer
+        minimum: 1
+        default: 3
+      exit_condition:
+        type: string
+    additionalProperties: false
+additionalProperties: false

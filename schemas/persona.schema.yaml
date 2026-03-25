@@ -1,0 +1,15 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Persona"
+description: "Schema for agent persona definition"
+type: object
+required:
+  - tone
+properties:
+  tone:
+    type: string
+  language:
+    type: string
+    default: "en"
+  custom_instructions:
+    type: string
+additionalProperties: false
