@@ -1,0 +1,16 @@
+# Agent Roles — {{ name }}
+
+{%- if spec.get("agents") %}
+{% for agent in spec.agents %}
+## {{ agent.id }}
+
+Role: {{ agent.role }}
+{%- if agent.get("next") %}
+Next: {{ agent.next | join(", ") }}
+{%- endif %}
+
+---
+{% endfor %}
+{%- else %}
+No agents defined in the specification.
+{%- endif %}

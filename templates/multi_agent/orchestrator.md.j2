@@ -1,0 +1,33 @@
+# Orchestrator — {{ name }}
+
+## Overview
+This file defines the orchestration rules for the multi-agent system {{ name }}.
+
+## Topology
+{%- if spec.get("topology") %}
+- Entry point: {{ spec.topology.get("entry", "N/A") }}
+- Max loops: {{ spec.topology.get("max_loops", 3) }}
+- Exit condition: {{ spec.topology.get("exit_condition", "all agents complete") }}
+{%- else %}
+No topology defined. Agents run sequentially.
+{%- endif %}
+
+## Agent Roster
+{%- if spec.get("agents") %}
+{% for agent in spec.agents %}
+### {{ agent.id }}
+- Role: {{ agent.role }}
+{%- if agent.get("next") %}
+- Passes control to: {{ agent.next | join(", ") }}
+{%- endif %}
+{% endfor %}
+{%- else %}
+No agents defined.
+{%- endif %}
+
+## Orchestration Rules
+1. Follow the topology graph in `architecture/topology.yaml`.
+2. Each agent reads its own file in `agents/` for role-specific instructions.
+3. The orchestrator coordinates handoffs between agents.
+4. Enforce all policies from `policies/policy.yaml` across every agent.
+5. Stop after max_loops iterations or when exit condition is met.
