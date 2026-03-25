@@ -11,10 +11,21 @@ from factory import __version__
 from factory.registries.loader import RegistryLoader
 from factory.schemas.validator import validate_spec
 
+
 # Resolve the registry that ships with the package.
-_BUILTIN_REGISTRY_DIR = (
-    Path(__file__).resolve().parent.parent.parent / "registry"
-)
+def _find_builtin_registry() -> Path:
+    """Resolve registry — installed package data first, then dev layout."""
+    try:
+        from importlib.resources import files as _res_files
+        candidate = Path(str(_res_files("factory").joinpath("registry")))
+        if (candidate / "sources").is_dir():
+            return candidate
+    except (ModuleNotFoundError, TypeError):
+        pass
+    return Path(__file__).resolve().parent.parent.parent / "registry"
+
+
+_BUILTIN_REGISTRY_DIR = _find_builtin_registry()
 
 
 @click.group()
@@ -60,6 +71,95 @@ def skills() -> None:
         # Truncate long descriptions so the table stays readable.
         short_desc = description[:48] + "…" if len(description) > 48 else description
         click.echo(f"{skill_id:<20} {policy:<8} {short_desc}")
+
+
+@cli.command()
+@click.argument("agent_dir", type=click.Path(exists=True))
+@click.option(
+    "--preview",
+    is_flag=True,
+    help="Show what would change without upgrading.",
+)
+@click.option(
+    "--no-backup",
+    is_flag=True,
+    help="Skip creating a backup.",
+)
+def upgrade(
+    agent_dir: str, preview: bool, no_backup: bool,
+) -> None:
+    """Check for and apply template upgrades to a generated agent."""
+    from factory.core.upgrader import (
+        check_upgrade,
+        execute_upgrade,
+        preview_upgrade,
+    )
+
+    agent_path = Path(agent_dir)
+
+    if preview:
+        result = preview_upgrade(agent_path)
+        click.echo(
+            f"Current: {result.current_version}"
+            f" → Latest: {result.latest_version}"
+        )
+        if result.changed_files:
+            click.echo("Changes:")
+            for f in result.changed_files:
+                click.echo(f"  {f}")
+        else:
+            click.echo("No changes detected.")
+        return
+
+    result = check_upgrade(agent_path)
+    if not result.needs_upgrade:
+        click.echo(
+            "Already up to date"
+            f" (version {result.current_version})."
+        )
+        return
+
+    click.echo(
+        f"Upgrading {agent_path.name}:"
+        f" {result.current_version}"
+        f" → {result.latest_version}"
+    )
+    result = execute_upgrade(
+        agent_path, backup=not no_backup,
+    )
+    if result.backup_path:
+        click.echo(f"Backup: {result.backup_path}")
+    click.echo("Upgrade complete.")
+
+
+@cli.command("critique")
+@click.argument("file", type=click.Path(exists=True))
+def critique_cmd(file: str) -> None:
+    """Evaluate an agent spec against best practices."""
+    from factory.core.critique import critique
+
+    path = Path(file)
+    with open(path) as fh:
+        spec: dict[str, object] = yaml.safe_load(fh)
+
+    result = critique(spec)
+
+    if result.warnings:
+        click.echo("Warnings:")
+        for w in result.warnings:
+            click.echo(f"  ! {w}")
+        click.echo()
+    else:
+        click.echo("No warnings -- spec looks good!\n")
+
+    click.echo("Score:")
+    for category, score in result.score.items():
+        click.echo(f"  {category:<20} {score}/100")
+    click.echo(
+        f"  {'TOTAL':<20} "
+        f"{result.total_score}/100 "
+        f"(Grade: {result.grade})"
+    )
 
 
 @cli.command()

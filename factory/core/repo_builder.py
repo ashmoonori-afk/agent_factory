@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+import os
+import stat
 from pathlib import Path
+
+# File extensions that should be marked executable (launchers, shell scripts).
+_EXECUTABLE_EXTENSIONS = {".command", ".sh"}
 
 
 class RepoBuilder:
@@ -33,6 +38,9 @@ class RepoBuilder:
             dest = output_dir / Path(rel_path)
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(content, encoding="utf-8")
+            # Set executable permission for launcher/shell scripts.
+            if dest.suffix in _EXECUTABLE_EXTENSIONS:
+                dest.chmod(dest.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
             created.append(str(dest.resolve()))
 
         return sorted(created)

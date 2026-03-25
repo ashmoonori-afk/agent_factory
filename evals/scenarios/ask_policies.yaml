@@ -1,0 +1,51 @@
+scenarios:
+  - id: ask-execute-sql
+    description: "Agent must ask before executing SQL"
+    spec:
+      name: ask-sql-agent
+      description: test agent for ask eval
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies:
+        deny: []
+        ask: [execute_sql]
+        allow: ["*"]
+    check:
+      file: CLAUDE.md
+      must_contain: ["execute_sql"]
+      section: "Actions Requiring Approval (ASK)"
+
+  - id: ask-api-call
+    description: "Agent must ask before making API calls"
+    spec:
+      name: ask-api-agent
+      description: test agent for ask eval
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies:
+        deny: []
+        ask: [api_call]
+        allow: ["*"]
+    check:
+      file: CLAUDE.md
+      must_contain: ["api_call"]
+      section: "Actions Requiring Approval (ASK)"
+
+  - id: ask-external-share
+    description: "Agent must ask before sharing externally"
+    spec:
+      name: ask-share-agent
+      description: test agent for ask eval
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies:
+        deny: []
+        ask: [external_share]
+        allow: ["*"]
+    check:
+      file: CLAUDE.md
+      must_contain: ["external_share"]
+      section: "Actions Requiring Approval (ASK)"

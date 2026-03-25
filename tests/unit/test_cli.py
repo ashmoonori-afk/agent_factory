@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
+import yaml
 from click.testing import CliRunner
 
 from factory.cli.main import cli
+from factory.core.generator import generate
 
 
 def test_version_command() -> None:
@@ -109,3 +113,59 @@ def test_personas_shows_tone() -> None:
     assert any(kw in result.output for kw in tone_keywords), (
         f"No tone descriptor found in personas output:\n{result.output}"
     )
+
+
+# -------------------------------------------------------------------
+# upgrade command
+# -------------------------------------------------------------------
+
+_UPGRADE_SPEC: dict[str, object] = {
+    "name": "upgrade-bot",
+    "description": "Agent for upgrade CLI tests",
+    "type": "single",
+}
+
+_UPGRADE_APPROVAL: dict[str, str] = {
+    "decision": "APPROVED",
+    "timestamp": "2026-03-25T12:00:00Z",
+    "user_input": "YES",
+    "action_type": "architecture_approval",
+    "detail": "upgrade-bot single-agent",
+}
+
+
+def _gen_agent(tmp_path: Path) -> Path:
+    out = tmp_path / "upgrade-bot"
+    generate(
+        spec=_UPGRADE_SPEC,
+        output=str(out),
+        approval_record=_UPGRADE_APPROVAL,
+        no_zip=True,
+    )
+    return out
+
+
+def test_upgrade_already_current(tmp_path: Path) -> None:
+    agent_dir = _gen_agent(tmp_path)
+    runner = CliRunner()
+    result = runner.invoke(cli, ["upgrade", str(agent_dir)])
+    assert result.exit_code == 0
+    assert "Already up to date" in result.output
+
+
+def test_upgrade_preview_flag(tmp_path: Path) -> None:
+    agent_dir = _gen_agent(tmp_path)
+    # Make version outdated
+    meta_path = agent_dir / "meta.yaml"
+    meta = yaml.safe_load(meta_path.read_text())
+    meta["template_version"] = "0.0.1"
+    meta_path.write_text(
+        yaml.dump(meta, default_flow_style=False)
+    )
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["upgrade", str(agent_dir), "--preview"],
+    )
+    assert result.exit_code == 0
+    assert "Current: 0.0.1" in result.output
+    assert "Latest: 1.0.1" in result.output

@@ -1,0 +1,124 @@
+# Agent Factory — Build Manifest v2.0
+# Execution order for Claude Code / Codex
+# Each step must pass its verify check before the next step starts.
+
+project:
+  name: agent-factory
+  root: /Users/MoonGwanghoon/hoops/agent-factory
+  python: "3.10+"
+  docs:
+    prd: ../prd_final.md
+    tech_spec: ../technical_spec.md
+    dev_plan: ../development_plan.md
+    redesign_spec: docs/superpowers/specs/2026-03-25-architecture-redesign.md
+
+conventions:
+  type_checking: mypy --strict
+  linting: ruff check .
+  formatting: ruff format .
+  testing: pytest -v --tb=short
+  commit_style: "conventional commits (feat:, fix:, test:, chore:)"
+
+steps:
+  # ── Phase 1: Foundation ──
+  - id: phase-1a
+    file: phase-1a-scaffold.md
+    title: "Project scaffold + package structure + schemas"
+    depends_on: []
+    verify: |
+      factory version &&
+      ruff check factory/ &&
+      mypy factory/ --strict
+
+  - id: phase-1b
+    file: phase-1b-approval-validator.md
+    title: "Schema validator + approval record model + unit tests"
+    depends_on: [phase-1a]
+    verify: |
+      pytest tests/unit/test_validator.py tests/unit/test_approval.py -v &&
+      ruff check factory/ &&
+      mypy factory/ --strict
+
+  # ── Phase 2: Core Generator ──
+  - id: phase-2a
+    file: phase-2a-renderer-builder.md
+    title: "Jinja2 renderer + repo builder + packager"
+    depends_on: [phase-1b]
+    verify: |
+      pytest tests/unit/test_renderer.py -v &&
+      ruff check factory/ &&
+      mypy factory/ --strict
+
+  - id: phase-2b
+    file: phase-2b-generator-api.md
+    title: "generate() orchestrator + public API + unit tests"
+    depends_on: [phase-2a]
+    verify: |
+      pytest tests/unit/test_generator.py -v &&
+      ruff check factory/ &&
+      mypy factory/ --strict
+
+  # ── Phase 3: Templates ──
+  - id: phase-3a
+    file: phase-3a-single-agent-templates.md
+    title: "Single-agent Jinja2 templates (CLAUDE.md.j2, CODEX.md.j2, etc.)"
+    depends_on: [phase-2b]
+    verify: |
+      ls templates/single_agent/CLAUDE.md.j2 &&
+      ls templates/single_agent/CODEX.md.j2
+
+  - id: phase-3b
+    file: phase-3b-multi-agent-templates.md
+    title: "Multi-agent templates + docs + policies + tests templates"
+    depends_on: [phase-3a]
+    verify: |
+      ls templates/multi_agent/CLAUDE.md.j2 &&
+      pytest tests/snapshot/ -v
+
+  # ── Phase 4: Registry ──
+  - id: phase-4a
+    file: phase-4a-registry-loader.md
+    title: "Registry loader + 10 skill .md files + 4 persona .yaml files"
+    depends_on: [phase-1a]  # can start early
+    verify: |
+      factory skills &&
+      factory personas &&
+      pytest tests/unit/test_registry.py -v
+
+  # ── Phase 5: Workflow Files ──
+  - id: phase-5a
+    file: phase-5a-workflow-files.md
+    title: "CLAUDE.md + CODEX.md final versions (tested in context)"
+    depends_on: [phase-3b, phase-4a]
+    verify: |
+      python3 -c "import factory; print(factory.generate.__doc__)"
+
+  # ── Phase 6: Polish + Release ──
+  - id: phase-6a
+    file: phase-6a-integration-tests.md
+    title: "Smoke tests + examples + validation"
+    depends_on: [phase-5a]
+    verify: |
+      pytest tests/ -v --tb=short &&
+      ruff check . &&
+      mypy factory/ --strict
+
+  - id: phase-6b
+    file: phase-6b-release-prep.md
+    title: "README + LICENSE + CONTRIBUTING + SECURITY + PyPI prep"
+    depends_on: [phase-6a]
+    verify: |
+      pip install -e . &&
+      factory version &&
+      pytest tests/ -v --tb=short
+
+# Parallel execution:
+#
+#   phase-1a → phase-1b → phase-2a → phase-2b → phase-3a → phase-3b
+#                                                              │
+#   phase-1a → phase-4a ──────────────────────────────────────┤
+#                                                              ▼
+#                                                         phase-5a
+#                                                              │
+#                                                              ▼
+#                                                    phase-6a → phase-6b

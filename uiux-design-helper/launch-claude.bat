@@ -1,0 +1,28 @@
+@echo off
+REM uiux-design-helper — Launch with Claude Code (Windows)
+REM Double-click this file to start your agent.
+
+cd /d "%~dp0"
+
+echo =========================================
+echo   uiux-design-helper — Starting Claude Code
+echo =========================================
+echo.
+echo   Project: %CD%
+echo   Claude Code will read CLAUDE.md automatically.
+echo.
+
+where claude >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [ERROR] 'claude' command not found.
+    echo   Install Claude Code: https://docs.anthropic.com/en/docs/claude-code
+    echo.
+    pause
+    exit /b 1
+)
+
+claude
+
+echo.
+echo Session ended.
+pause

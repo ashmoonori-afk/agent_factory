@@ -90,6 +90,7 @@ def test_multi_agent_renders_all_expected_files(
     expected_files = {
         "CLAUDE.md",
         "CODEX.md",
+        "AGENTS.md",
         "orchestrator.md",
         "agents/agent_role.md",
         "architecture/topology.yaml",
@@ -104,7 +105,7 @@ def test_multi_agent_minimal_renders_all_files(
     renderer: TemplateRenderer, minimal_multi_context: dict[str, object]
 ) -> None:
     result = renderer.render_all("multi_agent", minimal_multi_context)
-    assert len(result) == 8
+    assert len(result) == 9  # +AGENTS.md
 
 
 # ---------------------------------------------------------------------------
@@ -166,10 +167,17 @@ def test_multi_codex_md_contains_agent_name(
     assert "team-bot" in content
 
 
-def test_multi_codex_md_has_codex_specific_notes(
+def test_multi_codex_md_points_to_agents_md(
     renderer: TemplateRenderer, full_context: dict[str, object]
 ) -> None:
     content = renderer.render_all("multi_agent", full_context)["CODEX.md"]
+    assert "AGENTS.md" in content
+
+
+def test_multi_agents_md_has_codex_specific_notes(
+    renderer: TemplateRenderer, full_context: dict[str, object]
+) -> None:
+    content = renderer.render_all("multi_agent", full_context)["AGENTS.md"]
     assert "sandbox" in content.lower()
 
 

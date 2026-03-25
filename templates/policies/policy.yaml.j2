@@ -8,7 +8,7 @@
 {%- if spec.get("policies") and spec.policies.get("deny") %}
 deny:
 {%- for action in spec.policies.deny %}
-  - {{ action }}
+  - "{{ action }}"
 {%- endfor %}
 {%- else %}
 deny: []
@@ -17,7 +17,7 @@ deny: []
 {%- if spec.get("policies") and spec.policies.get("ask") %}
 ask:
 {%- for action in spec.policies.ask %}
-  - {{ action }}
+  - "{{ action }}"
 {%- endfor %}
 {%- else %}
 ask: []
@@ -26,7 +26,7 @@ ask: []
 {%- if spec.get("policies") and spec.policies.get("allow") %}
 allow:
 {%- for action in spec.policies.allow %}
-  - {{ action }}
+  - "{{ action }}"
 {%- endfor %}
 {%- else %}
 allow:

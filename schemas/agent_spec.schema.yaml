@@ -59,6 +59,10 @@ properties:
       type: string
   context:
     type: string
+  launchers:
+    type: boolean
+    default: true
+    description: "Generate double-click launcher files for macOS/Windows/Linux"
   agents:
     type: array
     items:

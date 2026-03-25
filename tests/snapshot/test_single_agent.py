@@ -92,6 +92,7 @@ def test_single_agent_renders_all_expected_files(
     expected_files = {
         "CLAUDE.md",
         "CODEX.md",
+        "AGENTS.md",
         "agent_spec.yaml",
         "README.md",
         "meta.yaml",
@@ -104,7 +105,7 @@ def test_single_agent_minimal_renders_all_files(
     renderer: TemplateRenderer, minimal_context: dict[str, object]
 ) -> None:
     result = renderer.render_all("single_agent", minimal_context)
-    assert len(result) == 6
+    assert len(result) == 7  # CLAUDE.md, CODEX.md, AGENTS.md, agent_spec, README, meta, .env
 
 
 # ---------------------------------------------------------------------------
@@ -198,18 +199,25 @@ def test_codex_md_contains_agent_name(
     assert "data-bot" in content
 
 
-def test_codex_md_has_codex_specific_notes(
+def test_codex_md_points_to_agents_md(
     renderer: TemplateRenderer, full_context: dict[str, object]
 ) -> None:
     content = renderer.render_all("single_agent", full_context)["CODEX.md"]
+    assert "AGENTS.md" in content
+
+
+def test_agents_md_has_codex_specific_notes(
+    renderer: TemplateRenderer, full_context: dict[str, object]
+) -> None:
+    content = renderer.render_all("single_agent", full_context)["AGENTS.md"]
     assert "Codex" in content
     assert "sandbox" in content.lower()
 
 
-def test_codex_md_contains_deny_actions(
+def test_agents_md_contains_deny_actions(
     renderer: TemplateRenderer, full_context: dict[str, object]
 ) -> None:
-    content = renderer.render_all("single_agent", full_context)["CODEX.md"]
+    content = renderer.render_all("single_agent", full_context)["AGENTS.md"]
     assert "send_email" in content
 
 

@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플라워플러스 — 꽃과 식물을 선물하는 가장 좋은 방법</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #2D6A4F;
+  --primary-light: #52B788;
+  --primary-dark: #1B4332;
+  --accent: #D4A373;
+  --accent-light: #E9C89B;
+  --neutral-900: #1A1A2E;
+  --neutral-700: #374151;
+  --neutral-600: #6B7280;
+  --neutral-400: #9CA3AF;
+  --neutral-200: #E5E7EB;
+  --neutral-100: #F8F9FA;
+  --surface: #FFFFFF;
+  --error: #DC2626;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.12);
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--neutral-700);
+  line-height: 1.6;
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; height: auto; display: block; }
+button { cursor: pointer; border: none; font-family: inherit; }
+ul { list-style: none; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--neutral-200);
+  transition: var(--transition);
+}
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.nav__logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+.nav__logo span { color: var(--accent); }
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav__link {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--neutral-600);
+  transition: var(--transition);
+  position: relative;
+}
+.nav__link:hover { color: var(--primary); }
+.nav__link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: var(--transition);
+}
+.nav__link:hover::after { width: 100%; }
+.nav__cta {
+  padding: 10px 24px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.nav__cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.nav__hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  padding: 8px;
+}
+.nav__hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--neutral-700);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero {
+  padding: 160px 0 96px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #fefce8 50%, #fff7ed 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(82,183,136,.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(45,106,79,.08);
+  border: 1px solid rgba(45,106,79,.15);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+.hero__badge::before { content: '🌿'; }
+.hero__title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--neutral-900);
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+.hero__title em {
+  font-style: normal;
+  color: var(--primary);
+  position: relative;
+}
+.hero__title em::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: rgba(82,183,136,.2);
+  z-index: -1;
+  border-radius: 2px;
+}
+.hero__desc {
+  font-size: 18px;
+  color: var(--neutral-600);
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+.hero__actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.btn--primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(45,106,79,.3);
+}
+.btn--primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(45,106,79,.35); }
+.btn--outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+.btn--outline:hover { background: rgba(45,106,79,.05); }
+.hero__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.hero__image-wrapper {
+  width: 480px;
+  height: 480px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+.hero__float {
+  position: absolute;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.hero__float--top { top: 30px; right: -30px; }
+.hero__float--bottom { bottom: 40px; left: -30px; }
+.hero__float-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.hero__float-icon--green { background: rgba(45,106,79,.1); }
+.hero__float-icon--gold { background: rgba(212,163,115,.15); }
+
+/* ============================================
+   TRUST METRICS
+   ============================================ */
+.trust {
+  padding: 80px 0;
+  background: var(--surface);
+}
+.trust__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.trust__card {
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--neutral-200);
+  transition: var(--transition);
+}
+.trust__card:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.trust__icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  background: rgba(45,106,79,.08);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.trust__number {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.trust__label {
+  font-size: 14px;
+  color: var(--neutral-600);
+}
+
+/* ============================================
+   SECTION COMMON
+   ============================================ */
+.section {
+  padding: 96px 0;
+}
+.section--alt { background: var(--neutral-100); }
+.section__header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section__tag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+.section__title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.section__desc {
+  font-size: 17px;
+  color: var(--neutral-600);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   FEATURES (서비스 차별점)
+   ============================================ */
+.features__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.feature-card {
+  padding: 36px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.feature-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+  border-color: var(--primary-light);
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  opacity: 0;
+  transition: var(--transition);
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  background: rgba(45,106,79,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.feature-card__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin-bottom: 10px;
+}
+.feature-card__desc {
+  font-size: 15px;
+  color: var(--neutral-600);
+  line-height: 1.7;
+}
+
+/* ============================================
+   PRODUCTS (상품 카테고리)
+   ============================================ */
+.products__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.product-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
+  transition: var(--transition);
+}
+.product-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+}
+.product-card__image {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  position: relative;
+}
+.product-card__image--celebration { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.product-card__image--condolence { background: linear-gradient(135deg, #e5e7eb, #d1d5db); }
+.product-card__image--plant { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+.product-card__badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 100px;
+}
+.product-card__body { padding: 24px; }
+.product-card__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin-bottom: 8px;
+}
+.product-card__desc {
+  font-size: 14px;
+  color: var(--neutral-600);
+  margin-bottom: 16px;
+}
+.product-card__price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.product-card__price span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--neutral-400);
+}
+.product-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  transition: var(--transition);
+}
+.product-card__link:hover { gap: 10px; }
+
+/* ============================================
+   REVIEWS (고객 후기)
+   ============================================ */
+.reviews__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.review-card {
+  padding: 32px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--neutral-200);
+  transition: var(--transition);
+  position: relative;
+}
+.review-card:hover { box-shadow: var(--shadow-md); }
+.review-card__stars {
+  color: #FBBF24;
+  font-size: 16px;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+.review-card__text {
+  font-size: 15px;
+  color: var(--neutral-700);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.review-card__author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.review-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neutral-600);
+}
+.review-card__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+.review-card__role {
+  font-size: 12px;
+  color: var(--neutral-400);
+}
+.review-card__tag {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 4px 10px;
+  background: rgba(45,106,79,.08);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 100px;
+}
+
+/* ============================================
+   PROMO BANNER
+   ============================================ */
+.promo {
+  padding: 96px 0;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.promo::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,.05);
+  border-radius: 50%;
+}
+.promo::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  background: rgba(255,255,255,.03);
+  border-radius: 50%;
+}
+.promo__tag {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(255,255,255,.15);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+.promo__title {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.promo__desc {
+  font-size: 18px;
+  opacity: .85;
+  margin-bottom: 36px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.promo__benefits {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.promo__benefit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.promo__benefit::before {
+  content: '✓';
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.btn--white {
+  background: #fff;
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+}
+.btn--white:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+
+/* ============================================
+   CONTACT / CONCIERGE
+   ============================================ */
+.contact__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.contact-form {
+  padding: 40px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.contact-form__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 8px;
+}
+.contact-form__desc {
+  font-size: 14px;
+  color: var(--neutral-600);
+  margin-bottom: 28px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--neutral-700);
+  margin-bottom: 6px;
+}
+.form-group label .required {
+  color: var(--error);
+  margin-left: 2px;
+}
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--neutral-700);
+  background: var(--surface);
+  transition: var(--transition);
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45,106,79,.1);
+}
+.form-textarea { resize: vertical; min-height: 100px; }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.btn--full { width: 100%; }
+.concierge {
+  padding: 40px;
+}
+.concierge__icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(212,163,115,.12);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+.concierge__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 8px;
+}
+.concierge__desc {
+  font-size: 15px;
+  color: var(--neutral-600);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+.concierge__list { margin-bottom: 32px; }
+.concierge__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--neutral-200);
+}
+.concierge__item:last-child { border-bottom: none; }
+.concierge__item-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: rgba(45,106,79,.06);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.concierge__item-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--neutral-900);
+  margin-bottom: 2px;
+}
+.concierge__item-desc {
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+.concierge__phone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-md);
+}
+.concierge__phone-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.concierge__phone-time {
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  padding: 64px 0 32px;
+  background: var(--neutral-900);
+  color: rgba(255,255,255,.7);
+}
+.footer__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+.footer__brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.footer__brand-name span { color: var(--accent); }
+.footer__brand-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 300px;
+}
+.footer__social {
+  display: flex;
+  gap: 12px;
+}
+.footer__social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: var(--transition);
+}
+.footer__social-link:hover { background: var(--primary); color: #fff; }
+.footer__col-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.footer__link {
+  display: block;
+  font-size: 14px;
+  padding: 5px 0;
+  transition: var(--transition);
+}
+.footer__link:hover { color: #fff; }
+.footer__bottom {
+  padding-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer__info {
+  font-size: 12px;
+  line-height: 1.8;
+  color: rgba(255,255,255,.4);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .hero__inner { grid-template-columns: 1fr; text-align: center; }
+  .hero__desc { margin: 0 auto 36px; }
+  .hero__actions { justify-content: center; }
+  .hero__visual { display: none; }
+  .hero__title { font-size: 40px; }
+  .trust__grid { grid-template-columns: repeat(2, 1fr); }
+  .features__grid { grid-template-columns: repeat(2, 1fr); }
+  .products__grid { grid-template-columns: repeat(2, 1fr); }
+  .contact__grid { grid-template-columns: 1fr; }
+  .footer__top { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav__links { display: none; }
+  .nav__hamburger { display: flex; }
+  .nav__inner { height: 60px; }
+  .hero { padding: 120px 0 64px; }
+  .hero__title { font-size: 32px; }
+  .hero__desc { font-size: 16px; }
+  .section { padding: 64px 0; }
+  .section__title { font-size: 28px; }
+  .trust__grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .trust__card { padding: 24px 16px; }
+  .trust__number { font-size: 28px; }
+  .features__grid { grid-template-columns: 1fr; }
+  .products__grid { grid-template-columns: 1fr; }
+  .reviews__grid { grid-template-columns: 1fr; }
+  .promo__title { font-size: 28px; }
+  .promo__benefits { flex-direction: column; align-items: center; gap: 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer__top { grid-template-columns: 1fr; gap: 32px; }
+  .footer__bottom { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 375px) {
+  .container { padding: 0 16px; }
+  .hero__title { font-size: 28px; }
+  .btn { padding: 12px 24px; font-size: 15px; }
+  .hero__actions { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== NAVIGATION ========== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="#" class="nav__logo">flower<span>+</span></a>
+    <div class="nav__links">
+      <a href="#features" class="nav__link">서비스 소개</a>
+      <a href="#products" class="nav__link">상품</a>
+      <a href="#reviews" class="nav__link">고객 후기</a>
+      <a href="#contact" class="nav__link">제휴 문의</a>
+      <a href="#" class="nav__cta">회원가입</a>
+    </div>
+    <button class="nav__hamburger" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <div class="hero__badge">기업 꽃 배달 서비스 No.1</div>
+        <h1 class="hero__title">꽃과 식물을 선물하는<br><em>가장 좋은 방법</em></h1>
+        <p class="hero__desc">10년 이상의 경력 플로리스트가 엄선한 신선한 꽃을 도착 시간 보장과 함께 안심 배송합니다.</p>
+        <div class="hero__actions">
+          <a href="#" class="btn btn--primary">지금 주문하기 →</a>
+          <a href="#features" class="btn btn--outline">서비스 알아보기</a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <div class="hero__image-wrapper">💐</div>
+        <div class="hero__float hero__float--top">
+          <div class="hero__float-icon hero__float-icon--green">🚚</div>
+          <div>
+            <div style="font-size:12px;color:var(--neutral-400)">도착시간</div>
+            <div style="color:var(--primary)">100% 보장</div>
+          </div>
+        </div>
+        <div class="hero__float hero__float--bottom">
+          <div class="hero__float-icon hero__float-icon--gold">⭐</div>
+          <div>
+            <div style="font-size:12px;color:var(--neutral-400)">고객만족도</div>
+            <div style="color:var(--accent)">98.5%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TRUST METRICS ========== -->
+<section class="trust">
+  <div class="container">
+    <div class="trust__grid">
+      <div class="trust__card">
+        <div class="trust__icon">📦</div>
+        <div class="trust__number">12,000+</div>
+        <div class="trust__label">월 평균 배송 건수</div>
+      </div>
+      <div class="trust__card">
+        <div class="trust__icon">😊</div>
+        <div class="trust__number">98.5%</div>
+        <div class="trust__label">고객 만족도</div>
+      </div>
+      <div class="trust__card">
+        <div class="trust__icon">👨‍🌾</div>
+        <div class="trust__number">10년+</div>
+        <div class="trust__label">전문 플로리스트 경력</div>
+      </div>
+      <div class="trust__card">
+        <div class="trust__icon">🛡️</div>
+        <div class="trust__number">100%</div>
+        <div class="trust__label">상품 보장 제도</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="section section--alt" id="features">
+  <div class="container">
+    <div class="section__header">
+      <div class="section__tag">Why Flower+</div>
+      <h2 class="section__title">선택받은 No.1 꽃 배달 서비스</h2>
+      <p class="section__desc">신선한 꽃, 정확한 배송, 완벽한 서비스. 플라워플러스가 다른 이유입니다.</p>
+    </div>
+    <div class="features__grid">
+      <div class="feature-card">
+        <div class="feature-card__icon">🌸</div>
+        <h3 class="feature-card__title">최상급 신선도</h3>
+        <p class="feature-card__desc">전문 플로리스트가 매일 아침 직접 선별한 A급 꽃만 사용합니다. 시들거나 상한 꽃은 절대 배송하지 않습니다.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">⏰</div>
+        <h3 class="feature-card__title">도착시간 100% 보장</h3>
+        <p class="feature-card__desc">약속한 시간에 반드시 도착합니다. 지연 시 전액 환불. 실시간 배송 추적으로 안심하세요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card__icon">📸</div>
+        <h3 class="feature-card__title">사진 포함 안심 배송</h3>
+        <p class="feature-card__desc">배송 완료 후 실제 전달 사진을 보내드립니다. 주문한 상품 그대로 전달되었는지 직접 확인하세요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRODUCTS ========== -->
+<section class="section" id="products">
+  <div class="container">
+    <div class="section__header">
+      <div class="section__tag">Products</div>
+      <h2 class="section__title">상품 카테고리</h2>
+      <p class="section__desc">축하부터 조문까지, 모든 순간에 어울리는 꽃을 준비했습니다.</p>
+    </div>
+    <div class="products__grid">
+      <div class="product-card">
+        <div class="product-card__image product-card__image--celebration">
+          <div class="product-card__badge">BEST</div>
+          🎉
+        </div>
+        <div class="product-card__body">
+          <h3 class="product-card__title">축하 화환</h3>
+          <p class="product-card__desc">개업, 승진, 당선 등 축하의 마음을 전하는 프리미엄 화환</p>
+          <div class="product-card__price">55,000원~ <span>무료배송</span></div>
+          <a href="#" class="product-card__link">상품 보러가기 →</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-card__image product-card__image--condolence">🕊️</div>
+        <div class="product-card__body">
+          <h3 class="product-card__title">근조 화환</h3>
+          <p class="product-card__desc">고인의 명복을 비는 정중하고 격조 높은 근조 화환</p>
+          <div class="product-card__price">55,000원~ <span>무료배송</span></div>
+          <a href="#" class="product-card__link">상품 보러가기 →</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-card__image product-card__image--plant">🪴</div>
+        <div class="product-card__body">
+          <h3 class="product-card__title">관엽 화분</h3>
+          <p class="product-card__desc">취업, 승진 축하에 오래도록 곁에 두는 싱그러운 화분</p>
+          <div class="product-card__price">35,000원~ <span>무료배송</span></div>
+          <a href="#" class="product-card__link">상품 보러가기 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== REVIEWS ========== -->
+<section class="section section--alt" id="reviews">
+  <div class="container">
+    <div class="section__header">
+      <div class="section__tag">Reviews</div>
+      <h2 class="section__title">고객님들의 생생한 후기</h2>
+      <p class="section__desc">실제 이용 고객님들의 솔직한 후기입니다.</p>
+    </div>
+    <div class="reviews__grid">
+      <div class="review-card">
+        <div class="review-card__tag">축하화환</div>
+        <div class="review-card__stars">★★★★★</div>
+        <p class="review-card__text">"거래처 개업식에 보냈는데, 사진으로 확인하니 정말 화려하고 고급스러웠어요. 거래처에서도 감사 연락이 왔습니다."</p>
+        <div class="review-card__author">
+          <div class="review-card__avatar">K</div>
+          <div>
+            <div class="review-card__name">김** 과장</div>
+            <div class="review-card__role">IT 기업 · 기업회원</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card__tag">근조화환</div>
+        <div class="review-card__stars">★★★★★</div>
+        <p class="review-card__text">"급하게 주문했는데 2시간 만에 배송 완료됐어요. 빠른 대응과 정중한 화환에 정말 감사했습니다."</p>
+        <div class="review-card__author">
+          <div class="review-card__avatar">이</div>
+          <div>
+            <div class="review-card__name">이** 대리</div>
+            <div class="review-card__role">금융사 · 기업회원</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-card__tag">관엽화분</div>
+        <div class="review-card__stars">★★★★★</div>
+        <p class="review-card__text">"후배 승진 선물로 화분을 보냈는데, 포장이 너무 예쁘고 상태도 완벽했어요. 다음에도 여기서 주문할게요!"</p>
+        <div class="review-card__author">
+          <div class="review-card__avatar">박</div>
+          <div>
+            <div class="review-card__name">박** 팀장</div>
+            <div class="review-card__role">제조업 · 기업회원</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROMO ========== -->
+<section class="promo">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="promo__tag">🎁 신규 회원 혜택</div>
+    <h2 class="promo__title">지금 가입하면<br>스타벅스 쿠폰 + 400% 쿠폰팩</h2>
+    <p class="promo__desc">첫 주문 시 즉시 사용 가능한 혜택을 드립니다.</p>
+    <div class="promo__benefits">
+      <div class="promo__benefit">스타벅스 아메리카노 전원 증정</div>
+      <div class="promo__benefit">최대 400% 할인 쿠폰팩</div>
+      <div class="promo__benefit">기업회원 추가 10% 할인</div>
+    </div>
+    <a href="#" class="btn btn--white">무료 회원가입 →</a>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section__header">
+      <div class="section__tag">Contact</div>
+      <h2 class="section__title">제휴 문의 &amp; 전화 상담</h2>
+      <p class="section__desc">기업 맞춤 서비스가 필요하시면 언제든 연락 주세요.</p>
+    </div>
+    <div class="contact__grid">
+      <form class="contact-form" onsubmit="return false;">
+        <h3 class="contact-form__title">기업 제휴 문의</h3>
+        <p class="contact-form__desc">아래 정보를 입력해 주시면 담당자가 빠르게 연락드립니다.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>회사명 <span class="required">*</span></label>
+            <input type="text" class="form-input" placeholder="회사명을 입력하세요">
+          </div>
+          <div class="form-group">
+            <label>직원 수</label>
+            <select class="form-select">
+              <option>선택하세요</option>
+              <option>1~10명</option>
+              <option>11~50명</option>
+              <option>51~200명</option>
+              <option>200명 이상</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>담당자 이메일 <span class="required">*</span></label>
+            <input type="email" class="form-input" placeholder="email@company.com">
+          </div>
+          <div class="form-group">
+            <label>연락처 <span class="required">*</span></label>
+            <input type="tel" class="form-input" placeholder="010-0000-0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>문의 내용</label>
+          <textarea class="form-textarea" placeholder="궁금하신 점이나 요청 사항을 적어주세요."></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">문의하기</button>
+      </form>
+
+      <div class="concierge">
+        <div class="concierge__icon">🎧</div>
+        <h3 class="concierge__title">플라워 컨시어지</h3>
+        <p class="concierge__desc">전문 플라워 스페셜리스트가 1:1로 상담하여 상황에 딱 맞는 꽃을 추천해드립니다.</p>
+        <div class="concierge__list">
+          <div class="concierge__item">
+            <div class="concierge__item-icon">💬</div>
+            <div>
+              <div class="concierge__item-title">맞춤 상품 추천</div>
+              <div class="concierge__item-desc">예산, 용도, 상황에 맞는 최적의 꽃을 제안합니다</div>
+            </div>
+          </div>
+          <div class="concierge__item">
+            <div class="concierge__item-icon">📞</div>
+            <div>
+              <div class="concierge__item-title">전화 주문 가능</div>
+              <div class="concierge__item-desc">온라인이 불편하시면 전화 한 통으로 주문 완료</div>
+            </div>
+          </div>
+          <div class="concierge__item">
+            <div class="concierge__item-icon">🔄</div>
+            <div>
+              <div class="concierge__item-title">교환 · 환불 지원</div>
+              <div class="concierge__item-desc">문제 발생 시 즉각 대응하는 고객 보호 시스템</div>
+            </div>
+          </div>
+        </div>
+        <div class="concierge__phone">
+          <div>
+            <div class="concierge__phone-number">📞 1688-7092</div>
+            <div class="concierge__phone-time">평일·주말·공휴일 08:30 ~ 18:30 (연중무휴)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <div class="footer__brand-name">flower<span>+</span></div>
+        <p class="footer__brand-desc">꽃과 식물을 선물하는 가장 좋은 방법. 기업 고객 맞춤 프리미엄 꽃 배달 서비스.</p>
+        <div class="footer__social">
+          <a href="#" class="footer__social-link" aria-label="Instagram">📷</a>
+          <a href="#" class="footer__social-link" aria-label="Blog">📝</a>
+          <a href="#" class="footer__social-link" aria-label="KakaoTalk">💬</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer__col-title">서비스</div>
+        <a href="#" class="footer__link">축하 화환</a>
+        <a href="#" class="footer__link">근조 화환</a>
+        <a href="#" class="footer__link">관엽 화분</a>
+        <a href="#" class="footer__link">꽃다발</a>
+      </div>
+      <div>
+        <div class="footer__col-title">고객지원</div>
+        <a href="#" class="footer__link">자주 묻는 질문</a>
+        <a href="#" class="footer__link">배송 안내</a>
+        <a href="#" class="footer__link">환불 정책</a>
+        <a href="#" class="footer__link">1:1 문의</a>
+      </div>
+      <div>
+        <div class="footer__col-title">기업 서비스</div>
+        <a href="#" class="footer__link">기업 제휴</a>
+        <a href="#" class="footer__link">정기 구독</a>
+        <a href="#" class="footer__link">대량 주문</a>
+        <a href="#" class="footer__link">세금계산서</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="footer__info">
+        (주)플라워플러스 | 대표: 홍길동 | 사업자등록번호: 000-00-00000<br>
+        통신판매업신고: 제2024-서울강남-00000호 | 주소: 서울특별시 강남구
+      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4)">
+        © 2025 FlowerPlus. All rights reserved.
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

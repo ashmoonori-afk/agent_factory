@@ -1,74 +1,8 @@
-# {{ name }} — Codex Multi-Agent System
+# {{ name }} — Codex Instructions
 
-> You are the orchestrator for {{ name }}. {{ description }}
+> **Note**: OpenAI Codex CLI reads `AGENTS.md`, not `CODEX.md`.
+> All Codex instructions are in **AGENTS.md** in this directory.
+>
+> If you are reading this in Claude Code, see `CLAUDE.md` instead.
 
-## Identity
-{%- if persona.get("tone") %}
-Tone: {{ persona.tone }}
-{%- endif %}
-{%- if persona.get("language") %}
-Language: {{ persona.language }}
-{%- endif %}
-{%- if persona.get("custom_instructions") %}
-{{ persona.custom_instructions }}
-{%- endif %}
-
-## Multi-Agent Architecture
-This is a multi-agent system. Read `architecture/topology.yaml` for the agent graph
-and `orchestrator.md` for orchestration rules.
-{%- if spec.get("agents") %}
-
-### Agents
-{% for agent in spec.agents %}- **{{ agent.id }}**: {{ agent.role }}
-{% endfor %}
-{%- endif %}
-
-## Policy Rules
-Read `policies/policy.yaml` and enforce strictly:
-- DENY: NEVER execute. No override. No exceptions.
-- ASK: Confirm with user before every execution.
-- ALLOW: Execute freely.
-
-### Forbidden Actions (DENY)
-{%- if spec.get("policies") and spec.policies.get("deny") %}
-{% for action in spec.policies.deny %}- {{ action }}
-{% endfor %}
-{%- else %}
-No explicit deny list configured.
-{%- endif %}
-
-### Actions Requiring Approval (ASK)
-{%- if spec.get("policies") and spec.policies.get("ask") and spec.policies.ask | length > 0 %}
-{% for action in spec.policies.ask %}- {{ action }}
-{% endfor %}
-{%- else %}
-No explicit ask list configured.
-{%- endif %}
-
-## Available Skills
-{%- if skills | length > 0 %}
-Read `skills/index.yaml` for the skill list.
-{% for skill in skills %}- {{ skill }}
-{% endfor %}
-{%- else %}
-No skills configured.
-{%- endif %}
-
-## Context
-Read `context/knowledge.md` for background knowledge.
-
-## Codex-Specific Notes
-- Use sandbox execution for all code operations.
-- Prefer file-based I/O over interactive prompts.
-- Write outputs to the working directory unless otherwise specified.
-
-## LLM Reading Order
-1. This file (CODEX.md)
-2. orchestrator.md
-3. architecture/topology.yaml
-4. agent_spec.yaml
-5. policies/policy.yaml
-6. agents/*.md
-7. skills/index.yaml -> skills/*.md
-8. context/knowledge.md
-9. docs/* (as needed)
+See [AGENTS.md](./AGENTS.md) for the full Codex agent instructions.

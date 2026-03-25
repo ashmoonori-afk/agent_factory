@@ -45,13 +45,20 @@ For each task, find the matching skill in `skills/{name}.md` and follow its inst
 No skills configured.
 {%- endif %}
 
+{%- if spec.get("context") %}
+
 ## Context
 Read `context/knowledge.md` for background knowledge.
+{%- endif %}
 
 ## LLM Reading Order
 1. This file (CLAUDE.md)
 2. agent_spec.yaml
 3. policies/policy.yaml
+{%- if skills | length > 0 %}
 4. skills/index.yaml -> skills/*.md
+{%- endif %}
+{%- if spec.get("context") %}
 5. context/knowledge.md
+{%- endif %}
 6. docs/* (as needed)

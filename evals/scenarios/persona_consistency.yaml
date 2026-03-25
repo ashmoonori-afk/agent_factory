@@ -1,0 +1,45 @@
+scenarios:
+  - id: persona-professional
+    description: "Professional persona tone appears in output"
+    spec:
+      name: persona-pro-agent
+      description: test agent with professional persona
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      claude_md_contains: ["professional"]
+      persona_file: personas/default.yaml
+      persona_contains: ["professional"]
+
+  - id: persona-technical
+    description: "Technical persona tone appears in output"
+    spec:
+      name: persona-tech-agent
+      description: test agent with technical persona
+      type: single
+      skills: []
+      persona: {tone: technical, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      claude_md_contains: ["technical"]
+      persona_file: personas/default.yaml
+      persona_contains: ["technical"]
+
+  - id: persona-custom-inline
+    description: "Custom inline persona passes through without registry"
+    spec:
+      name: persona-custom-agent
+      description: test agent with custom persona
+      type: single
+      skills: []
+      persona:
+        tone: custom-whimsical
+        language: en
+        custom_instructions: "Speak like a pirate captain."
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      claude_md_contains: ["custom-whimsical"]
+      persona_file: personas/default.yaml
+      persona_contains: ["custom-whimsical"]

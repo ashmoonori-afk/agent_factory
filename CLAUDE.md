@@ -54,12 +54,18 @@ Ask these questions ONE AT A TIME. Include explanation, example, and default wit
 - Q6: Personality/tone? (professional, friendly, technical, minimal)
 - Q7: Actions needing your permission first? (ASK-level)
 - Q8: Background knowledge?
+- Q12: Include launcher files? (double-click to start agent)
 
 **If Q3 = "Team":**
 
 - Q9: Each agent's role
 - Q10: Communication method
 - Q11: External plugins?
+
+**Q12: Launchers**
+> Want launcher files so you can start this agent with a double-click?
+> Creates files for macOS (.command), Windows (.bat), and Linux (.sh).
+> Default: yes
 
 **Exit**: Show summary, ask "Is this correct?"
 
@@ -85,6 +91,7 @@ spec = {
     "persona": {"tone": "professional", "language": "en"},
     "skills": [],
     "context": "",
+    "launchers": True,  # from Q12, generates double-click launcher files
 }
 ```
 
@@ -154,31 +161,34 @@ approval_record = {
 
 ### PHASE 5: Generate
 
-Call the Python library. Run this as a single Python invocation:
+Call the Python library. Write a temporary script and execute it:
 
 ```bash
-.venv/bin/python -c "
-import factory, json, datetime
+.venv/bin/python3 << 'EOF'
+import factory
+from datetime import datetime, timezone
 
-spec = json.loads('''<spec_dict as JSON>''')
+spec = <spec_dict>
 
-approval = json.loads('''{
-    \"decision\": \"APPROVED\",
-    \"timestamp\": \"<ISO 8601>\",
-    \"user_input\": \"YES\",
-    \"action_type\": \"architecture_approval\",
-    \"detail\": \"<summary>\"
-}''')
+approval = {
+    "decision": "APPROVED",
+    "timestamp": datetime.now(timezone.utc).isoformat(),
+    "user_input": "YES",
+    "action_type": "architecture_approval",
+    "detail": "<summary of what was approved>",
+}
 
 result = factory.generate(
     spec=spec,
-    output='./<agent-name>',
+    output="./<agent-name>",
     approval_record=approval,
 )
-print(f'Generated {result.file_count} files at {result.output_path}')
+print(f"Generated {result.file_count} files at {result.output_path}")
 if result.zip_path:
-    print(f'ZIP: {result.zip_path}')
-"
+    print(f"ZIP: {result.zip_path}")
+for f in sorted(result.files):
+    print(f"  {f}")
+EOF
 ```
 
 If `factory.generate()` raises an error, report it to the user and offer to fix.
@@ -201,9 +211,12 @@ Files: 18
 
 What was generated:
   - CLAUDE.md and CODEX.md (the agent's brain)
-  - policies/deny.yaml, ask.yaml, allow.yaml
-  - skills/ directory with skill definitions
-  - docs/, tests/, and configuration files
+  - agent_spec.yaml, meta.yaml, README.md, .env.example
+  - policies/policy.yaml + approval_log.jsonl
+  - skills/index.yaml + skills/*.md (per skill)
+  - personas/default.yaml
+  - docs/architecture.md, policy.md, reading_order.md
+  - tests/test-agent.md, test-policy.md
 
 Next Steps:
 1. Open ./my-data-bot/ in a new Claude Code session
@@ -255,6 +268,17 @@ If user provides a YAML spec file instead of answering interview questions:
 **Validate a spec file:**
 ```bash
 .venv/bin/python -m factory validate spec.yaml
+```
+
+**Critique a spec (warnings + score):**
+```bash
+.venv/bin/python -m factory critique spec.yaml
+```
+
+**Upgrade a generated agent:**
+```bash
+.venv/bin/python -m factory upgrade ./my-agent --preview
+.venv/bin/python -m factory upgrade ./my-agent
 ```
 
 **Available skills:** sql-executor, csv-reader, file-reader, file-writer, web-search, json-parser, text-summarizer, code-reviewer, code-generator, shell-executor

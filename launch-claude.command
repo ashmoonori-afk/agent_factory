@@ -1,0 +1,29 @@
+#!/bin/bash
+# Agent Factory — Launch with Claude Code (macOS)
+# Double-click this file to open Agent Factory in Claude Code.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
+echo "========================================="
+echo "  Agent Factory — Starting Claude Code"
+echo "========================================="
+echo ""
+echo "  Project: $SCRIPT_DIR"
+echo "  Claude Code will read CLAUDE.md automatically."
+echo ""
+
+if ! command -v claude &>/dev/null; then
+    echo "[ERROR] 'claude' command not found."
+    echo "  Install Claude Code: https://docs.anthropic.com/en/docs/claude-code"
+    echo ""
+    echo "Press any key to close..."
+    read -n 1
+    exit 1
+fi
+
+claude
+
+echo ""
+echo "Session ended. Press any key to close..."
+read -n 1

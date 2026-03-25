@@ -1,0 +1,5 @@
+skills:
+- file: code-reviewer.md
+  id: code-reviewer
+  name: Code Reviewer
+  policy: ALLOW

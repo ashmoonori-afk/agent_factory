@@ -13,8 +13,11 @@ from factory.core.generator import (
     GenerationError,
     GenerationResult,
     SpecValidationError,
+    _resolve_persona,
+    _resolve_skills,
     generate,
 )
+from factory.registries.loader import RegistryLoader
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -131,6 +134,16 @@ def test_generate_meta_yaml_contains_name(tmp_path: Path) -> None:
     assert data["name"] == "test-bot"
 
 
+def test_meta_yaml_contains_template_version(tmp_path: Path) -> None:
+    import yaml
+
+    result = _run(tmp_path)
+    meta = Path(result.output_path) / "meta.yaml"
+    data = yaml.safe_load(meta.read_text())
+    assert "template_version" in data
+    assert data["template_version"] == "1.0.1"
+
+
 def test_generate_writes_approval_log(tmp_path: Path) -> None:
     result = _run(tmp_path)
     log = Path(result.output_path) / "approval_log.jsonl"
@@ -207,3 +220,68 @@ def test_generate_multi_agent_uses_multi_agent_template_set(tmp_path: Path) -> N
 
 def test_generation_error_is_exception() -> None:
     assert issubclass(GenerationError, Exception)
+
+
+# ---------------------------------------------------------------------------
+# Registry resolution helpers
+# ---------------------------------------------------------------------------
+
+_REGISTRY_DIR = Path(__file__).resolve().parent.parent.parent / "registry"
+
+
+@pytest.fixture()
+def loader() -> RegistryLoader:
+    return RegistryLoader(registry_dir=_REGISTRY_DIR)
+
+
+def test_resolve_skills_returns_full_metadata(
+    loader: RegistryLoader,
+) -> None:
+    """Resolved skills contain id, name, description, policy, content."""
+    result = _resolve_skills(["csv-reader"], loader)
+    assert len(result) == 1
+    skill = result[0]
+    for key in ("id", "name", "description", "policy", "content"):
+        assert key in skill, f"Missing key: {key}"
+    assert skill["id"] == "csv-reader"
+    assert isinstance(skill["content"], str)
+    assert len(str(skill["content"])) > 0
+
+
+def test_resolve_skills_unknown_skill_returns_minimal(
+    loader: RegistryLoader,
+) -> None:
+    """Unknown skill IDs produce a fallback dict with empty content."""
+    result = _resolve_skills(["nonexistent-xyz"], loader)
+    assert len(result) == 1
+    skill = result[0]
+    assert skill["id"] == "nonexistent-xyz"
+    assert skill["name"] == "nonexistent-xyz"
+    assert skill["description"] == ""
+    assert skill["policy"] == "ALLOW"
+    assert skill["content"] == ""
+
+
+def test_resolve_persona_by_id_merges_registry_data(
+    loader: RegistryLoader,
+) -> None:
+    """Persona resolution with a known ID merges registry data."""
+    persona: dict[str, object] = {"id": "professional"}
+    result = _resolve_persona(persona, loader)
+    # Should contain registry keys like 'tone' and 'description'
+    assert "tone" in result
+    assert "description" in result
+    # The original "id" key is preserved
+    assert result["id"] == "professional"
+
+
+def test_resolve_persona_unknown_returns_unchanged(
+    loader: RegistryLoader,
+) -> None:
+    """Unknown persona passes through unchanged."""
+    persona: dict[str, object] = {
+        "id": "nonexistent-persona",
+        "tone": "custom",
+    }
+    result = _resolve_persona(persona, loader)
+    assert result == persona

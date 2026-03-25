@@ -18,8 +18,30 @@ class TemplateRenderer:
 
     def __init__(self, template_dir: Path | None = None) -> None:
         if template_dir is None:
-            template_dir = Path(__file__).resolve().parent.parent.parent / "templates"
+            template_dir = self._find_template_dir()
         self._template_dir = template_dir
+
+    @staticmethod
+    def _find_template_dir() -> Path:
+        """Resolve template directory — installed package data first, then dev layout.
+
+        After ``pip install``, hatchling force-includes the top-level ``templates/``
+        directory into ``factory/templates/`` inside the wheel.  In dev mode the
+        templates sit at the project root next to the ``factory/`` package.
+        """
+        try:
+            from importlib.resources import files
+            candidate = Path(str(files("factory").joinpath("templates")))
+            if (candidate / "single_agent").is_dir():
+                return candidate
+        except (ModuleNotFoundError, TypeError):
+            pass
+        return Path(__file__).resolve().parent.parent.parent / "templates"
+
+    @property
+    def template_dir(self) -> Path:
+        """Public accessor for the resolved template root directory."""
+        return self._template_dir
 
     # ------------------------------------------------------------------
     # Public API

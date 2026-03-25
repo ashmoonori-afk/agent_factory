@@ -5,6 +5,11 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["factory"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"templates" = "factory/templates"
+"schemas" = "factory/schemas"
+"registry" = "factory/registry"
+
 [project]
 name = "agent-factory"
 version = "1.0.0"

@@ -54,8 +54,11 @@ Read `skills/index.yaml` for the skill list.
 No skills configured.
 {%- endif %}
 
+{%- if spec.get("context") %}
+
 ## Context
 Read `context/knowledge.md` for background knowledge.
+{%- endif %}
 
 ## LLM Reading Order
 1. This file (CLAUDE.md)
@@ -64,6 +67,10 @@ Read `context/knowledge.md` for background knowledge.
 4. agent_spec.yaml
 5. policies/policy.yaml
 6. agents/*.md
+{%- if skills | length > 0 %}
 7. skills/index.yaml -> skills/*.md
+{%- endif %}
+{%- if spec.get("context") %}
 8. context/knowledge.md
+{%- endif %}
 9. docs/* (as needed)

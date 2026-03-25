@@ -23,9 +23,10 @@ def loader() -> RegistryLoader:
 # ---------------------------------------------------------------------------
 
 
-def test_list_skills_returns_ten_items(loader: RegistryLoader) -> None:
+def test_list_skills_returns_expected_count(loader: RegistryLoader) -> None:
     skills = loader.list_skills()
-    assert len(skills) == 10
+    # 10 original + 125 from everything-claude-code + 7 from ui-ux-pro-max + 23 from awesome-claude-code
+    assert len(skills) >= 10  # at least the original 10 built-in skills
 
 
 def test_list_skills_items_have_required_keys(loader: RegistryLoader) -> None:
@@ -46,7 +47,8 @@ def test_list_skills_policies_are_valid(loader: RegistryLoader) -> None:
 
 def test_list_skills_contains_expected_ids(loader: RegistryLoader) -> None:
     ids = {s["id"] for s in loader.list_skills()}
-    expected = {
+    # Original 10 skills must always be present
+    original_10 = {
         "sql-executor",
         "csv-reader",
         "file-reader",
@@ -58,7 +60,7 @@ def test_list_skills_contains_expected_ids(loader: RegistryLoader) -> None:
         "code-generator",
         "shell-executor",
     }
-    assert ids == expected
+    assert original_10.issubset(ids), f"Missing original skills: {original_10 - ids}"
 
 
 def test_list_skills_shell_executor_is_deny(loader: RegistryLoader) -> None:
@@ -171,4 +173,4 @@ def test_loader_default_registry_dir_resolves() -> None:
     """RegistryLoader with no args should find the built-in registry."""
     loader = RegistryLoader()
     skills = loader.list_skills()
-    assert len(skills) == 10
+    assert len(skills) >= 10  # at least the original 10 built-in skills

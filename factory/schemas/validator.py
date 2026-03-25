@@ -7,7 +7,30 @@ from pathlib import Path
 import jsonschema
 import yaml
 
-_SCHEMA_DIR = Path(__file__).resolve().parent.parent.parent / "schemas"
+
+def _find_schema_dir() -> Path:
+    """Resolve schema directory — installed package data first, then dev layout.
+
+    The schema YAML files live in the top-level ``schemas/`` directory (NOT inside
+    ``factory/schemas/``, which is a Python package containing validator.py).
+    After ``pip install``, hatchling force-includes them into ``factory/schemas/``
+    inside the wheel, so importlib.resources will find them there.  In dev mode
+    (editable install or direct checkout) we fall back to the project-root path.
+    """
+    # Installed wheel: templates are force-included under factory/schemas/
+    try:
+        from importlib.resources import files as _res_files
+        candidate = Path(str(_res_files("factory").joinpath("schemas")))
+        # Must contain actual schema files, not just __init__.py
+        if any(candidate.glob("*.schema.yaml")):
+            return candidate
+    except (ModuleNotFoundError, TypeError):
+        pass
+    # Dev layout: schemas/ sits next to the factory/ package
+    return Path(__file__).resolve().parent.parent.parent / "schemas"
+
+
+_SCHEMA_DIR = _find_schema_dir()
 
 
 def load_schema(name: str) -> dict[str, object]:

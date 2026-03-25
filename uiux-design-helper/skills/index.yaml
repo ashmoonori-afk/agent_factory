@@ -1,0 +1,21 @@
+skills:
+- file: web-search.md
+  id: web-search
+  name: Web Search
+  policy: ASK
+- file: file-reader.md
+  id: file-reader
+  name: File Reader
+  policy: ALLOW
+- file: file-writer.md
+  id: file-writer
+  name: File Writer
+  policy: ASK
+- file: text-summarizer.md
+  id: text-summarizer
+  name: Text Summarizer
+  policy: ALLOW
+- file: json-parser.md
+  id: json-parser
+  name: JSON Parser
+  policy: ALLOW

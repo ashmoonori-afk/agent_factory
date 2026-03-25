@@ -1,0 +1,32 @@
+scenarios:
+  - id: allow-wildcard
+    description: "Wildcard allow grants all actions"
+    spec:
+      name: allow-all-agent
+      description: test agent for allow eval
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies:
+        deny: []
+        ask: []
+        allow: ["*"]
+    check:
+      file: policies/policy.yaml
+      must_contain: ['- "*"']
+
+  - id: allow-specific
+    description: "Specific allow actions are listed"
+    spec:
+      name: allow-specific-agent
+      description: test agent for allow eval
+      type: single
+      skills: []
+      persona: {tone: professional, language: en}
+      policies:
+        deny: []
+        ask: []
+        allow: [read_file, write_file]
+    check:
+      file: policies/policy.yaml
+      must_contain: ["read_file", "write_file"]

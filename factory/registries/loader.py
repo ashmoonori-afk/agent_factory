@@ -6,8 +6,20 @@ from pathlib import Path
 
 import yaml
 
-# Default: registry/ sits next to the factory/ package at the project root.
-_DEFAULT_REGISTRY_DIR = Path(__file__).resolve().parent.parent.parent / "registry"
+
+def _find_registry_dir() -> Path:
+    """Resolve registry directory — installed package data first, then dev."""
+    try:
+        from importlib.resources import files as _res_files
+        candidate = Path(str(_res_files("factory").joinpath("registry")))
+        if (candidate / "sources").is_dir():
+            return candidate
+    except (ModuleNotFoundError, TypeError):
+        pass
+    return Path(__file__).resolve().parent.parent.parent / "registry"
+
+
+_DEFAULT_REGISTRY_DIR = _find_registry_dir()
 
 # Skill frontmatter is parsed from the first H1 and H2 lines of each .md file
 # rather than a separate YAML block, keeping skill files self-contained.
@@ -85,23 +97,37 @@ class RegistryLoader:
             manifest: dict[str, object] = yaml.safe_load(fh)
 
         skills_cfg = manifest.get("skills", {})
-        assert isinstance(skills_cfg, dict)
+        if not isinstance(skills_cfg, dict):
+            raise TypeError(
+                f"Registry manifest 'skills' must be a dict, got {type(skills_cfg).__name__}"
+            )
         skills_dir_rel = str(skills_cfg.get("builtin_dir", "../builtin_skills"))
         self._skills_dir = (
             self._registry_dir / "sources" / skills_dir_rel
         ).resolve()
         raw_skill_items = skills_cfg.get("items", [])
-        assert isinstance(raw_skill_items, list)
+        if not isinstance(raw_skill_items, list):
+            raw_type = type(raw_skill_items).__name__
+            raise TypeError(
+                f"Registry manifest 'skills.items' must be a list, got {raw_type}"
+            )
         self._skill_ids: list[str] = [str(i) for i in raw_skill_items]
 
         personas_cfg = manifest.get("personas", {})
-        assert isinstance(personas_cfg, dict)
+        if not isinstance(personas_cfg, dict):
+            raise TypeError(
+                f"Registry manifest 'personas' must be a dict, got {type(personas_cfg).__name__}"
+            )
         personas_dir_rel = str(personas_cfg.get("builtin_dir", "../builtin_personas"))
         self._personas_dir = (
             self._registry_dir / "sources" / personas_dir_rel
         ).resolve()
         raw_persona_items = personas_cfg.get("items", [])
-        assert isinstance(raw_persona_items, list)
+        if not isinstance(raw_persona_items, list):
+            raw_type = type(raw_persona_items).__name__
+            raise TypeError(
+                f"Registry manifest 'personas.items' must be a list, got {raw_type}"
+            )
         self._persona_ids: list[str] = [str(i) for i in raw_persona_items]
 
         # Eagerly cache parsed frontmatter so list_* calls are cheap.

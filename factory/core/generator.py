@@ -13,6 +13,7 @@ from factory.approval.records import ApprovalRecord
 from factory.core.packager import create_zip
 from factory.core.renderer import TemplateRenderer
 from factory.core.repo_builder import RepoBuilder
+from factory.registries.loader import RegistryLoader
 from factory.schemas.validator import validate_spec
 
 # ---------------------------------------------------------------------------
@@ -55,18 +56,53 @@ class GenerationResult:
 
 
 # ---------------------------------------------------------------------------
-# Registry stubs (Phase 4 will replace these)
+# Registry resolution helpers
 # ---------------------------------------------------------------------------
 
 
-def _resolve_skills(skill_ids: list[str]) -> list[dict[str, str]]:
-    """Stub: return skill ids as minimal dicts until Phase 4 registry is ready."""
-    return [{"id": sid} for sid in skill_ids]
+def _resolve_skills(
+    skill_ids: list[str], loader: RegistryLoader
+) -> list[dict[str, object]]:
+    """Resolve skill IDs to full metadata + content via the registry."""
+    resolved: list[dict[str, object]] = []
+    for sid in skill_ids:
+        try:
+            meta = next(
+                s for s in loader.list_skills() if s["id"] == sid
+            )
+            content = loader.get_skill(sid)
+            resolved.append({**meta, "content": content})
+        except (KeyError, StopIteration):
+            # Unknown skill -- keep as minimal dict so generation
+            # still succeeds.
+            resolved.append({
+                "id": sid,
+                "name": sid,
+                "description": "",
+                "policy": "ALLOW",
+                "content": "",
+            })
+    return resolved
 
 
-def _resolve_persona(persona: dict[str, object]) -> dict[str, object]:
-    """Stub: pass persona through unchanged until Phase 4 registry is ready."""
-    return persona
+def _resolve_persona(
+    persona: dict[str, object], loader: RegistryLoader
+) -> dict[str, object]:
+    """Resolve persona config via the registry.
+
+    If persona has an "id" key matching a built-in persona, merge
+    registry data.  Otherwise return the raw persona dict unchanged.
+    """
+    persona_id = persona.get("id") or persona.get("tone")
+    if not isinstance(persona_id, str):
+        return persona
+    try:
+        registry_persona = loader.get_persona(persona_id)
+        # Merge: spec overrides take precedence over registry defaults
+        merged: dict[str, object] = {**registry_persona, **persona}
+        return merged
+    except KeyError:
+        return persona
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +123,7 @@ def generate(
 
     1. Validate *spec* against the agent_spec schema.
     2. Construct and validate the :class:`~factory.approval.records.ApprovalRecord`.
-    3. Resolve skills and persona from the registry (stub in Phase 2).
+    3. Resolve skills and persona from the registry.
     4. Select the Jinja2 template set based on ``spec["type"]``.
     5. Render all templates into a filename→content dict.
     6. Write every file to *output* directory.
@@ -139,19 +175,27 @@ def generate(
         )
 
     # ------------------------------------------------------------------
-    # Step 3 — Compute approval hash + resolve registry stubs
+    # Step 3 — Compute approval hash + resolve registry assets
     # ------------------------------------------------------------------
     approval_hash = ApprovalRecord.compute_hash(
         record.action_type, record.detail, record.timestamp
     )
 
+    # Instantiate registry loader once
+    loader = RegistryLoader()
+
     raw_skills = spec.get("skills")
-    skill_ids: list[str] = [str(s) for s in (raw_skills if isinstance(raw_skills, list) else [])]
-    _resolve_skills(skill_ids)
+    skill_ids: list[str] = [
+        str(s)
+        for s in (raw_skills if isinstance(raw_skills, list) else [])
+    ]
+    resolved_skills = _resolve_skills(skill_ids, loader)
 
     raw_persona = spec.get("persona")
-    persona_raw: dict[str, object] = raw_persona if isinstance(raw_persona, dict) else {}
-    _resolve_persona(persona_raw)
+    persona_raw: dict[str, object] = (
+        raw_persona if isinstance(raw_persona, dict) else {}
+    )
+    resolved_persona = _resolve_persona(persona_raw, loader)
 
     # ------------------------------------------------------------------
     # Step 4 — Select template set
@@ -163,17 +207,62 @@ def generate(
     # Step 5 — Render templates
     # ------------------------------------------------------------------
     renderer = TemplateRenderer()
+
+    # Read template version
+    version_file = renderer.template_dir / "VERSION"
+    template_version = "unknown"
+    if version_file.is_file():
+        template_version = version_file.read_text().strip()
+
     context: dict[str, object] = {
         "spec": spec,
         "name": spec.get("name", ""),
         "description": spec.get("description", ""),
         "type": agent_type,
         "skills": skill_ids,
+        "resolved_skills": resolved_skills,
         "persona": persona_raw,
+        "resolved_persona": resolved_persona,
         "approval_hash": approval_hash,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
     rendered_files = renderer.render_all(template_set, context)
+
+    # Step 5b — Render shared templates (policies, docs, tests)
+    for shared_set in ("policies", "docs", "tests"):
+        shared_rendered = renderer.render_all(shared_set, context)
+        for fname, content in shared_rendered.items():
+            rendered_files[f"{shared_set}/{fname}"] = content
+
+    # Step 5c — Write resolved skill files (.md + index.yaml)
+    skill_index_items: list[dict[str, str]] = []
+    for skill in resolved_skills:
+        skill_id = str(skill.get("id", ""))
+        skill_content = str(skill.get("content", ""))
+        if skill_id and skill_content:
+            rendered_files[f"skills/{skill_id}.md"] = skill_content
+            skill_index_items.append({
+                "id": skill_id,
+                "name": str(skill.get("name", skill_id)),
+                "file": f"{skill_id}.md",
+                "policy": str(skill.get("policy", "ALLOW")),
+            })
+    if skill_index_items:
+        rendered_files["skills/index.yaml"] = yaml.dump(
+            {"skills": skill_index_items}, default_flow_style=False
+        )
+
+    # Step 5d — Write resolved persona file
+    if resolved_persona:
+        rendered_files["personas/default.yaml"] = yaml.dump(
+            dict(resolved_persona), default_flow_style=False
+        )
+
+    # Step 5e — Render launcher files (if enabled)
+    if spec.get("launchers", True):
+        launcher_rendered = renderer.render_all("launchers", context)
+        for fname, content in launcher_rendered.items():
+            rendered_files[fname] = content
 
     # ------------------------------------------------------------------
     # Step 6 — Write files to output directory
@@ -195,9 +284,17 @@ def generate(
         "generated_at": context["generated_at"],
         "approval_hash": approval_hash,
         "factory_version": "1.0.0",
+        "template_version": template_version,
     }
     meta_path = output_dir / "meta.yaml"
-    meta_path.write_text(yaml.dump(meta, default_flow_style=False), encoding="utf-8")
+    try:
+        meta_path.write_text(
+            yaml.dump(meta, default_flow_style=False), encoding="utf-8"
+        )
+    except OSError as exc:
+        raise GenerationError(
+            f"Failed to write meta.yaml to {output_dir}: {exc}"
+        ) from exc
     written.append(str(meta_path.resolve()))
 
     # ------------------------------------------------------------------
@@ -208,8 +305,13 @@ def generate(
         "generated_at": str(context["generated_at"]),
     }
     log_path = output_dir / "approval_log.jsonl"
-    with log_path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(log_entry) + "\n")
+    try:
+        with log_path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(log_entry) + "\n")
+    except OSError as exc:
+        raise GenerationError(
+            f"Failed to write approval_log.jsonl to {output_dir}: {exc}"
+        ) from exc
     written.append(str(log_path.resolve()))
 
     written_sorted = sorted(set(written))

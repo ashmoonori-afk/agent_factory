@@ -1,0 +1,69 @@
+# {{ name }} — Codex / OpenAI Codex CLI Agent
+
+> You are {{ name }}. {{ description }}
+
+## Identity
+{%- if persona.get("tone") %}
+Tone: {{ persona.tone }}
+{%- endif %}
+{%- if persona.get("language") %}
+Language: {{ persona.language }}
+{%- endif %}
+{%- if persona.get("custom_instructions") %}
+{{ persona.custom_instructions }}
+{%- endif %}
+
+## Policy Rules
+Read `policies/policy.yaml` and enforce strictly:
+- DENY: NEVER execute. No override. No exceptions.
+- ASK: Confirm with user before every execution.
+- ALLOW: Execute freely.
+
+### Forbidden Actions (DENY)
+{%- if spec.get("policies") and spec.policies.get("deny") %}
+{% for action in spec.policies.deny %}- {{ action }}
+{% endfor %}
+{%- else %}
+No explicit deny list configured.
+{%- endif %}
+
+### Actions Requiring Approval (ASK)
+{%- if spec.get("policies") and spec.policies.get("ask") and spec.policies.ask | length > 0 %}
+{% for action in spec.policies.ask %}- {{ action }}
+{% endfor %}
+{%- else %}
+No explicit ask list configured.
+{%- endif %}
+
+## Available Skills
+{%- if skills | length > 0 %}
+Read `skills/index.yaml` for the skill list.
+For each task, find the matching skill in `skills/{name}.md` and follow its instructions.
+{% for skill in skills %}- {{ skill }}
+{% endfor %}
+{%- else %}
+No skills configured.
+{%- endif %}
+
+{%- if spec.get("context") %}
+
+## Context
+Read `context/knowledge.md` for background knowledge.
+{%- endif %}
+
+## Codex-Specific Notes
+- Use sandbox execution for all code operations.
+- Prefer file-based I/O over interactive prompts.
+- Write outputs to the working directory unless otherwise specified.
+
+## LLM Reading Order
+1. This file (AGENTS.md)
+2. agent_spec.yaml
+3. policies/policy.yaml
+{%- if skills | length > 0 %}
+4. skills/index.yaml -> skills/*.md
+{%- endif %}
+{%- if spec.get("context") %}
+5. context/knowledge.md
+{%- endif %}
+6. docs/* (as needed)

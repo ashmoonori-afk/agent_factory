@@ -86,6 +86,16 @@ class TestSingleAgentGeneration:
             ".env.example",
             "meta.yaml",
             "approval_log.jsonl",
+            "policies/policy.yaml",
+            "policies/approval_log.jsonl",
+            "docs/architecture.md",
+            "docs/policy.md",
+            "docs/reading_order.md",
+            "tests/test-agent.md",
+            "tests/test-policy.md",
+            "skills/sql-executor.md",
+            "skills/csv-reader.md",
+            "personas/default.yaml",
         ]
         for fname in expected:
             assert (out / fname).exists(), f"Missing file: {fname}"
@@ -97,7 +107,7 @@ class TestSingleAgentGeneration:
             approval_record=VALID_APPROVAL,
         )
         assert result.file_count == len(result.files)
-        assert result.file_count >= 7  # at least the 7 standard files
+        assert result.file_count >= 17  # standard + shared + skills + persona
 
     def test_zip_created_and_valid(self, tmp_path: Path) -> None:
         result = factory.generate(
@@ -122,6 +132,8 @@ class TestSingleAgentGeneration:
         assert "CODEX.md" in names
         assert "meta.yaml" in names
         assert "approval_log.jsonl" in names
+        assert "policies/policy.yaml" in names
+        assert "docs/architecture.md" in names
 
     def test_meta_yaml_correct_version(self, tmp_path: Path) -> None:
         result = factory.generate(
@@ -132,6 +144,7 @@ class TestSingleAgentGeneration:
         meta_path = Path(result.output_path) / "meta.yaml"
         meta = yaml.safe_load(meta_path.read_text())
         assert meta["factory_version"] == "1.0.0"
+        assert meta["template_version"] == "1.0.1"
         assert meta["name"] == "data-analysis-bot"
         assert meta["type"] == "single"
         assert "generated_at" in meta
@@ -206,6 +219,16 @@ class TestMultiAgentGeneration:
             "orchestrator.md",
             "agents/agent_role.md",
             "architecture/topology.yaml",
+            "policies/policy.yaml",
+            "policies/approval_log.jsonl",
+            "docs/architecture.md",
+            "docs/policy.md",
+            "docs/reading_order.md",
+            "tests/test-agent.md",
+            "tests/test-policy.md",
+            "skills/code-reviewer.md",
+            "skills/code-generator.md",
+            "personas/default.yaml",
         ]
         for fname in expected:
             assert (out / fname).exists(), f"Missing file: {fname}"
@@ -217,7 +240,7 @@ class TestMultiAgentGeneration:
             approval_record=VALID_APPROVAL,
         )
         assert result.file_count == len(result.files)
-        assert result.file_count >= 9  # at least the 9 standard files
+        assert result.file_count >= 19  # standard + shared + skills + persona
 
     def test_zip_created_and_contains_multi_agent_files(self, tmp_path: Path) -> None:
         result = factory.generate(

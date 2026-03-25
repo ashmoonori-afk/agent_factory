@@ -13,19 +13,19 @@ policies:
 {%- if spec.policies.get("deny") %}
   deny:
 {%- for action in spec.policies.deny %}
-    - {{ action }}
+    - "{{ action }}"
 {%- endfor %}
 {%- endif %}
 {%- if spec.policies.get("ask") %}
   ask:
 {%- for action in spec.policies.ask %}
-    - {{ action }}
+    - "{{ action }}"
 {%- endfor %}
 {%- endif %}
 {%- if spec.policies.get("allow") %}
   allow:
 {%- for action in spec.policies.allow %}
-    - {{ action }}
+    - "{{ action }}"
 {%- endfor %}
 {%- endif %}
 {%- endif %}

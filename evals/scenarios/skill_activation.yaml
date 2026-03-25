@@ -1,0 +1,65 @@
+scenarios:
+  - id: skill-csv-reader
+    description: "csv-reader skill file is generated"
+    spec:
+      name: skill-csv-agent
+      description: test agent with csv-reader
+      type: single
+      skills: [csv-reader]
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      skill_file: skills/csv-reader.md
+      claude_md_contains: ["csv-reader"]
+
+  - id: skill-web-search
+    description: "web-search skill file is generated"
+    spec:
+      name: skill-web-agent
+      description: test agent with web-search
+      type: single
+      skills: [web-search]
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      skill_file: skills/web-search.md
+      claude_md_contains: ["web-search"]
+
+  - id: skill-code-reviewer
+    description: "code-reviewer skill file is generated"
+    spec:
+      name: skill-review-agent
+      description: test agent with code-reviewer
+      type: single
+      skills: [code-reviewer]
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      skill_file: skills/code-reviewer.md
+      claude_md_contains: ["code-reviewer"]
+
+  - id: skill-sql-executor
+    description: "sql-executor skill file is generated"
+    spec:
+      name: skill-sql-agent
+      description: test agent with sql-executor
+      type: single
+      skills: [sql-executor]
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      skill_file: skills/sql-executor.md
+      claude_md_contains: ["sql-executor"]
+
+  - id: skill-unknown-graceful
+    description: "Unknown skill does not crash, creates minimal file"
+    spec:
+      name: skill-unknown-agent
+      description: test agent with unknown skill
+      type: single
+      skills: [nonexistent-skill]
+      persona: {tone: professional, language: en}
+      policies: {deny: [], ask: [], allow: ["*"]}
+    check:
+      claude_md_contains: ["nonexistent-skill"]
+      no_crash: true

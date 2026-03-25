@@ -1,0 +1,5 @@
+skills:
+- file: csv-reader.md
+  id: csv-reader
+  name: CSV Reader
+  policy: ALLOW
