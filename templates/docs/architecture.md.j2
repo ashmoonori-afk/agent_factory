@@ -1,0 +1,38 @@
+# Architecture — {{ name }}
+
+## Overview
+
+{{ description }}
+
+**Type:** {{ type }}
+{%- if spec.get("runtime") %}
+**Runtime:** {{ spec.runtime.get("primary", "both") }}
+{%- endif %}
+
+## Components
+
+### Agent Instructions
+- `CLAUDE.md` — Instructions for Claude Code
+- `CODEX.md` — Instructions for Codex
+
+### Policies
+Policy enforcement is defined in `policies/policy.yaml`.
+All actions are classified as DENY, ASK, or ALLOW.
+
+### Skills
+{%- if skills | length > 0 %}
+This agent uses the following skills:
+{% for skill in skills %}- {{ skill }}
+{% endfor %}
+{%- else %}
+No skills configured.
+{%- endif %}
+{% if type == "multi" %}
+## Multi-Agent Topology
+{%- if spec.get("agents") %}
+{% for agent in spec.agents %}- **{{ agent.id }}**: {{ agent.role }}
+{% endfor %}
+{%- endif %}
+
+See `architecture/topology.yaml` and `orchestrator.md` for details.
+{%- endif %}

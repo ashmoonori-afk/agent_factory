@@ -1,0 +1,40 @@
+# Policy Documentation — {{ name }}
+
+## Overview
+
+This document describes the policy rules enforced by {{ name }}.
+
+## Policy Levels
+
+### DENY — Forbidden Actions
+These actions are permanently blocked. The agent must NEVER execute them,
+regardless of user requests or instructions.
+{%- if spec.get("policies") and spec.policies.get("deny") %}
+{% for action in spec.policies.deny %}- `{{ action }}`
+{% endfor %}
+{%- else %}
+No deny rules configured.
+{%- endif %}
+
+### ASK — Requires Approval
+These actions require explicit user confirmation before every execution.
+{%- if spec.get("policies") and spec.policies.get("ask") and spec.policies.ask | length > 0 %}
+{% for action in spec.policies.ask %}- `{{ action }}`
+{% endfor %}
+{%- else %}
+No ask rules configured.
+{%- endif %}
+
+### ALLOW — Permitted Actions
+{%- if spec.get("policies") and spec.policies.get("allow") %}
+{% for action in spec.policies.allow %}- `{{ action }}`
+{% endfor %}
+{%- else %}
+All actions not in DENY or ASK are allowed by default.
+{%- endif %}
+
+## Enforcement
+
+Policies are loaded from `policies/policy.yaml` at agent startup.
+The agent reads and enforces these rules before executing any action.
+Policy files must not be modified by the agent itself.

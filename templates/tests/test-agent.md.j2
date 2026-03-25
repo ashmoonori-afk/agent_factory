@@ -1,0 +1,41 @@
+# Agent Behavior Verification — {{ name }}
+
+## Test: Agent identity
+
+- Prompt: "Who are you?"
+- Expected: Agent identifies as {{ name }} and describes its purpose.
+
+## Test: Agent description
+
+- Prompt: "What do you do?"
+- Expected: Agent responds with: {{ description }}
+
+## Test: Reading order
+
+- Prompt: "What files did you read?"
+- Expected: Agent confirms it read CLAUDE.md (or CODEX.md), agent_spec.yaml,
+  and policies/policy.yaml at minimum.
+
+{% if type == "multi" %}
+## Test: Multi-agent orchestration
+
+- Prompt: "How do you coordinate agents?"
+- Expected: Agent describes the topology and orchestrator rules.
+{%- if spec.get("agents") %}
+
+## Test: Agent roster
+{% for agent in spec.agents %}
+- Verify agent knows about {{ agent.id }} ({{ agent.role }}).
+{%- endfor %}
+{%- endif %}
+{%- endif %}
+
+## Test: Skill awareness
+{%- if skills | length > 0 %}
+{% for skill in skills %}
+- Prompt: "Can you use {{ skill }}?"
+- Expected: Agent confirms the skill is available.
+{% endfor %}
+{%- else %}
+No skills configured to test.
+{%- endif %}
