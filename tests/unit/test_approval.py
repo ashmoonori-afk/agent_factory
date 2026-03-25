@@ -34,7 +34,9 @@ def test_hash_is_deterministic() -> None:
 
 
 def test_hash_matches_expected() -> None:
-    payload = "architecture_approval:single-agent with csv-reader, sql-executor:2026-03-25T14:30:00Z"
+    payload = (
+        "architecture_approval:single-agent with csv-reader, sql-executor:2026-03-25T14:30:00Z"
+    )
     expected = hashlib.sha256(payload.encode()).hexdigest()
     actual = ApprovalRecord.compute_hash(
         "architecture_approval",
