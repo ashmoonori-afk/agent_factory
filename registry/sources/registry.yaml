@@ -1,0 +1,21 @@
+version: "1.0"
+skills:
+  builtin_dir: "../builtin_skills"
+  items:
+    - sql-executor
+    - csv-reader
+    - file-reader
+    - file-writer
+    - web-search
+    - json-parser
+    - text-summarizer
+    - code-reviewer
+    - code-generator
+    - shell-executor
+personas:
+  builtin_dir: "../builtin_personas"
+  items:
+    - professional
+    - friendly
+    - technical
+    - minimal
