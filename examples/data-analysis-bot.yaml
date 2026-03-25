@@ -1,0 +1,27 @@
+name: data-analysis-bot
+description: Analyze CSV files and SQL databases to generate summary reports and insights
+type: single
+runtime:
+  primary: both
+skills:
+  - sql-executor
+  - csv-reader
+persona:
+  tone: professional
+  language: en
+policies:
+  deny:
+    - send_email
+    - delete_file
+    - deploy
+    - payment
+    - external_share
+    - modify_meta_agent
+    - modify_own_prompt
+    - modify_policy_file
+  ask:
+    - execute_sql
+  allow:
+    - read_file
+    - write_file
+context: "Specializes in data analysis workflows including CSV parsing, SQL querying, and generating statistical summaries."

@@ -1,0 +1,27 @@
+name: code-assistant
+description: Review code for issues and generate improvements with best practices
+type: single
+runtime:
+  primary: both
+skills:
+  - code-reviewer
+  - code-generator
+persona:
+  tone: technical
+  language: en
+policies:
+  deny:
+    - send_email
+    - delete_file
+    - deploy
+    - payment
+    - external_share
+    - modify_meta_agent
+    - modify_own_prompt
+    - modify_policy_file
+  ask:
+    - shell_execute
+  allow:
+    - read_file
+    - write_file
+context: "Specializes in code review, refactoring suggestions, and generating clean, well-documented code following language-specific best practices."
