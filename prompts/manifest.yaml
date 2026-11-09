@@ -4,7 +4,7 @@
 
 project:
   name: agent-factory
-  root: /Users/MoonGwanghoon/hoops/agent-factory
+  root: .
   python: "3.10+"
   docs:
     prd: ../prd_final.md

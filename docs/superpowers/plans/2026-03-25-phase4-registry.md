@@ -225,7 +225,7 @@ def test_loader_default_registry_dir_resolves() -> None:
 - [ ] **Step 2: Run tests — confirm they fail**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_registry.py -v 2>&1 | head -40
 ```
 
@@ -234,9 +234,9 @@ Expected: `ModuleNotFoundError` or `ImportError` for `factory.registries.loader`
 - [ ] **Step 3: Create the registry manifest and directory skeleton**
 
 ```bash
-mkdir -p /Users/MoonGwanghoon/hoops/agent-factory/registry/builtin_skills
-mkdir -p /Users/MoonGwanghoon/hoops/agent-factory/registry/builtin_personas
-mkdir -p /Users/MoonGwanghoon/hoops/agent-factory/registry/sources
+mkdir -p <repo-root>/registry/builtin_skills
+mkdir -p <repo-root>/registry/builtin_personas
+mkdir -p <repo-root>/registry/sources
 ```
 
 Create `registry/sources/registry.yaml`:
@@ -469,7 +469,7 @@ class RegistryLoader:
 - [ ] **Step 5: Run tests — confirm they still fail (no skill/persona files yet)**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_registry.py -v 2>&1 | head -30
 ```
 
@@ -478,7 +478,7 @@ Expected: `FileNotFoundError` — skill and persona files are not created yet. T
 - [ ] **Step 6: Run ruff and mypy on the loader only**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m ruff check factory/registries/loader.py
 .venv/bin/python -m mypy factory/registries/loader.py --strict
 ```
@@ -488,7 +488,7 @@ Expected: No errors.
 - [ ] **Step 7: Commit loader + manifest skeleton**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/registries/loader.py registry/sources/registry.yaml tests/unit/test_registry.py
 git commit -m "$(cat <<'EOF'
 feat(registry): implement RegistryLoader and add failing tests
@@ -907,7 +907,7 @@ Agent: "Shell command execution is blocked by policy. I can describe the directo
 - [ ] **Step 11: Run the failing tests to confirm only persona files are still missing**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_registry.py -v 2>&1 | head -30
 ```
 
@@ -916,7 +916,7 @@ Expected: Tests that require persona files (`list_personas`, `get_persona`) stil
 - [ ] **Step 12: Commit all 10 skill files**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add registry/builtin_skills/
 git commit -m "$(cat <<'EOF'
 feat(registry): add 10 built-in skill .md files
@@ -1019,7 +1019,7 @@ custom_instructions: |
 - [ ] **Step 5: Run full registry tests — expect all to pass**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_registry.py -v
 ```
 
@@ -1028,7 +1028,7 @@ Expected: All 22 tests PASS.
 - [ ] **Step 6: Commit persona files**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add registry/builtin_personas/
 git commit -m "$(cat <<'EOF'
 feat(registry): add 4 built-in persona .yaml files
@@ -1169,7 +1169,7 @@ def test_personas_shows_tone() -> None:
 - [ ] **Step 2: Run new CLI tests — confirm skills/personas tests fail**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_cli.py -v 2>&1
 ```
 
@@ -1262,7 +1262,7 @@ def personas() -> None:
 - [ ] **Step 4: Run all CLI tests — confirm they all pass**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/unit/test_cli.py -v
 ```
 
@@ -1271,7 +1271,7 @@ Expected: All tests PASS.
 - [ ] **Step 5: Run full test suite**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m pytest tests/ -v --tb=short
 ```
 
@@ -1280,7 +1280,7 @@ Expected: All tests PASS (existing validator + approval tests unaffected, plus n
 - [ ] **Step 6: Run linters and type checker**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 .venv/bin/python -m ruff check factory/ tests/
 .venv/bin/python -m mypy factory/ --strict
 ```
@@ -1290,7 +1290,7 @@ Expected: Zero errors on both.
 - [ ] **Step 7: Smoke-test CLI manually**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 
 # Skills table
 .venv/bin/python -m factory skills
@@ -1352,7 +1352,7 @@ print('get_skill OK, length:', len(content))
 - [ ] **Step 9: Commit CLI update and updated tests**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/cli/main.py tests/unit/test_cli.py
 git commit -m "$(cat <<'EOF'
 feat(cli): wire factory skills and factory personas to RegistryLoader
@@ -1368,7 +1368,7 @@ EOF
 - [ ] **Step 10: Final commit — phase complete**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add -A
 git status  # confirm nothing unexpected is staged
 git commit -m "$(cat <<'EOF'

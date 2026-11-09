@@ -125,7 +125,7 @@ venv/
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git init
 git add pyproject.toml .python-version .gitignore
 git commit -m "chore: initialize project scaffold with pyproject.toml"
@@ -177,7 +177,7 @@ Each file is empty initially:
 
 - [ ] **Step 4: Install package in dev mode**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pip install -e ".[dev]"`
+Run: `cd <repo-root> && pip install -e ".[dev]"`
 Expected: Successful install with all dev dependencies.
 
 - [ ] **Step 5: Verify import works**
@@ -487,7 +487,7 @@ def test_validate_multi_agent_spec() -> None:
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_validator.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_validator.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'factory.schemas.validator'` (or ImportError)
 
 - [ ] **Step 3: Implement the schema validator**
@@ -548,12 +548,12 @@ def validate_spec(data: dict, schema_name: str = "agent_spec") -> list[str]:  # 
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_validator.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_validator.py -v`
 Expected: All 7 tests PASS
 
 - [ ] **Step 5: Run linters**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && ruff check factory/schemas/ && mypy factory/schemas/ --strict`
+Run: `cd <repo-root> && ruff check factory/schemas/ && mypy factory/schemas/ --strict`
 Expected: No errors
 
 - [ ] **Step 6: Commit**
@@ -696,7 +696,7 @@ def test_to_dict_round_trips() -> None:
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_approval.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_approval.py -v`
 Expected: FAIL — ImportError
 
 - [ ] **Step 3: Implement the approval record model**
@@ -798,12 +798,12 @@ class ApprovalRecord:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_approval.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_approval.py -v`
 Expected: All 12 tests PASS
 
 - [ ] **Step 5: Run linters**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && ruff check factory/approval/ && mypy factory/approval/ --strict`
+Run: `cd <repo-root> && ruff check factory/approval/ && mypy factory/approval/ --strict`
 Expected: No errors
 
 - [ ] **Step 6: Commit**
@@ -861,7 +861,7 @@ def test_personas_placeholder() -> None:
 
 - [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_cli.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_cli.py -v`
 Expected: FAIL — ImportError
 
 - [ ] **Step 3: Implement the CLI**
@@ -925,17 +925,17 @@ def personas() -> None:
 
 - [ ] **Step 4: Run tests to verify they pass**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_cli.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_cli.py -v`
 Expected: All 4 tests PASS
 
 - [ ] **Step 5: Verify CLI entry point works**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && factory version`
+Run: `cd <repo-root> && factory version`
 Expected: `agent-factory 1.0.0`
 
 - [ ] **Step 6: Run linters**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && ruff check factory/cli/ && mypy factory/cli/ --strict`
+Run: `cd <repo-root> && ruff check factory/cli/ && mypy factory/cli/ --strict`
 Expected: No errors
 
 - [ ] **Step 7: Commit**
@@ -953,24 +953,24 @@ git commit -m "feat: add auxiliary CLI with version, validate, skills, personas 
 
 - [ ] **Step 1: Run all tests**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/ -v --tb=short`
+Run: `cd <repo-root> && pytest tests/ -v --tb=short`
 Expected: All 23 tests PASS (7 validator + 12 approval + 4 CLI)
 
 - [ ] **Step 2: Run ruff on entire codebase**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && ruff check factory/ tests/`
+Run: `cd <repo-root> && ruff check factory/ tests/`
 Expected: No errors
 
 - [ ] **Step 3: Run mypy on entire codebase**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && mypy factory/ --strict`
+Run: `cd <repo-root> && mypy factory/ --strict`
 Expected: No errors
 
 - [ ] **Step 4: Verify validate CLI command with a sample spec**
 
 Run:
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 cat > /tmp/test-spec.yaml << 'EOF'
 name: test-bot
 description: A test agent

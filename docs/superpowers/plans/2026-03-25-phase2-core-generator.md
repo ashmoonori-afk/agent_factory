@@ -177,7 +177,7 @@ def test_render_all_preserves_nested_directory_structure(tmp_path: Path) -> None
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_renderer.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_renderer.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'factory.core.renderer'`
 
 - [ ] **Step 3: Write minimal implementation**
@@ -287,14 +287,14 @@ class TemplateRenderer:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_renderer.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_renderer.py -v`
 Expected: All 11 tests PASS
 
 - [ ] **Step 5: Run linters**
 
 Run:
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 ruff check factory/core/renderer.py
 mypy factory/core/renderer.py --strict
 ```
@@ -303,7 +303,7 @@ Expected: No errors
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/core/renderer.py tests/unit/test_renderer.py
 git commit -m "feat: implement TemplateRenderer with Jinja2 StrictUndefined"
 ```
@@ -382,7 +382,7 @@ def test_build_preserves_utf8_content(tmp_path: Path) -> None:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_repo_builder.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_repo_builder.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'factory.core.repo_builder'`
 
 - [ ] **Step 3: Write minimal implementation**
@@ -432,14 +432,14 @@ class RepoBuilder:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_repo_builder.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_repo_builder.py -v`
 Expected: All 7 tests PASS
 
 - [ ] **Step 5: Run linters**
 
 Run:
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 ruff check factory/core/repo_builder.py
 mypy factory/core/repo_builder.py --strict
 ```
@@ -448,7 +448,7 @@ Expected: No errors
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/core/repo_builder.py tests/unit/test_repo_builder.py
 git commit -m "feat: implement RepoBuilder — write file dict to directory tree"
 ```
@@ -561,7 +561,7 @@ def test_create_zip_empty_dir_produces_valid_zip(tmp_path: Path) -> None:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_packager.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_packager.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'factory.core.packager'`
 
 - [ ] **Step 3: Write minimal implementation**
@@ -611,14 +611,14 @@ def create_zip(source_dir: Path, zip_path: Path | None = None) -> Path:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_packager.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_packager.py -v`
 Expected: All 8 tests PASS
 
 - [ ] **Step 5: Run linters**
 
 Run:
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 ruff check factory/core/packager.py
 mypy factory/core/packager.py --strict
 ```
@@ -627,7 +627,7 @@ Expected: No errors
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/core/packager.py tests/unit/test_packager.py
 git commit -m "feat: implement create_zip packager using stdlib zipfile"
 ```
@@ -859,7 +859,7 @@ def test_generation_error_is_exception() -> None:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_generator.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_generator.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'factory.core.generator'`
 
 - [ ] **Step 3: Write minimal implementation**
@@ -1103,14 +1103,14 @@ def generate(
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_generator.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_generator.py -v`
 Expected: All 23 tests PASS
 
 - [ ] **Step 5: Run linters**
 
 Run:
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 ruff check factory/core/generator.py
 mypy factory/core/generator.py --strict
 ```
@@ -1119,7 +1119,7 @@ Expected: No errors
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/core/generator.py tests/unit/test_generator.py
 git commit -m "feat: implement generate() orchestrator with approval gate and ZIP output"
 ```
@@ -1187,7 +1187,7 @@ def test_validate_is_callable() -> None:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_public_api.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_public_api.py -v`
 Expected: FAIL — `ImportError: cannot import name 'generate' from 'factory'`
 
 - [ ] **Step 3: Wire the public API**
@@ -1221,28 +1221,28 @@ __all__ = [
 
 - [ ] **Step 4: Run public API tests to verify they pass**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/unit/test_public_api.py -v`
+Run: `cd <repo-root> && pytest tests/unit/test_public_api.py -v`
 Expected: All 9 tests PASS
 
 - [ ] **Step 5: Run the full test suite**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && pytest tests/ -v --tb=short`
+Run: `cd <repo-root> && pytest tests/ -v --tb=short`
 Expected: All tests PASS (Phase 1 tests 23 + renderer 11 + repo_builder 7 + packager 8 + generator 23 + public API 9 = 81 total)
 
 - [ ] **Step 6: Run ruff on the entire codebase**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && ruff check factory/ tests/`
+Run: `cd <repo-root> && ruff check factory/ tests/`
 Expected: No errors
 
 - [ ] **Step 7: Run mypy on the entire factory package**
 
-Run: `cd /Users/MoonGwanghoon/hoops/agent-factory && mypy factory/ --strict`
+Run: `cd <repo-root> && mypy factory/ --strict`
 Expected: No errors
 
 - [ ] **Step 8: Smoke-test the public API end-to-end from the CLI**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 python3 - <<'EOF'
 import factory, json, tempfile, pathlib
 
@@ -1275,7 +1275,7 @@ Expected: Prints `output_path`, `zip_path`, `file_count`, and `PASS`.
 - [ ] **Step 9: Commit**
 
 ```bash
-cd /Users/MoonGwanghoon/hoops/agent-factory
+cd <repo-root>
 git add factory/__init__.py tests/unit/test_public_api.py
 git commit -m "feat: wire public API in factory/__init__.py — Phase 2 complete"
 ```
